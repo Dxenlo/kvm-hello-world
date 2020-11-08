@@ -176,6 +176,13 @@ int run_vm(struct vm *vm, struct vcpu *vcpu, size_t sz)
 				       vcpu->kvm_run->io.size, 1, stdout);
 				fflush(stdout);
 				continue;
+			}else if (vcpu->kvm_run->io.direction == KVM_EXIT_IO_IN
+			    && vcpu->kvm_run->io.port == 0xE9){
+				char *p = (char *)vcpu->kvm_run;
+				fread(p + vcpu->kvm_run->io.data_offset,
+				       vcpu->kvm_run->io.size, 1, stdin);
+				fflush(stdout);
+				continue;
 			}
 
 			/* fall through */
